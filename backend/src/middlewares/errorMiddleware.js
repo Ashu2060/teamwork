@@ -5,6 +5,7 @@ export const notFound = (req, res, next) => {
 };
 
 export const errorHandler = (error, req, res, next) => {
+  console.error(`[${req.method} ${req.originalUrl}]`, error.message);
   const statusCode = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
   res.status(statusCode).json({
     message: error.message || "Something went wrong on the server"

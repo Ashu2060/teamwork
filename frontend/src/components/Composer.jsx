@@ -3,7 +3,9 @@ const Composer = ({
   onInputChange,
   onSubmit,
   onToggleListening,
+  onStopSpeaking,
   listening,
+  speaking,
   disabled
 }) => {
   return (
@@ -18,6 +20,11 @@ const Composer = ({
         <button className={`mic-button ${listening ? "listening" : ""}`} onClick={onToggleListening} type="button">
           {listening ? "Stop Mic" : "Mic"}
         </button>
+        {speaking ? (
+          <button className="stop-voice-button" onClick={onStopSpeaking} type="button">
+            Stop Voice
+          </button>
+        ) : null}
         <button className="send-button" disabled={disabled || !input.trim()} type="submit">
           Send
         </button>

@@ -56,6 +56,9 @@ lastsem/
 |           |-- emotion.js
 |           |-- session.js
 |           `-- speech.js
+|-- emotion_service/
+|   |-- app.py
+|   `-- requirements.txt
 |-- .gitignore
 `-- README.md
 ```
@@ -85,6 +88,34 @@ Emotion to auto-mode mapping:
 - `stressed -> life-coach`
 - `neutral -> therapist`
 
+## Emotion Service
+
+### DeepFace Emotion Detection
+
+For stronger emotion detection, this project now supports a local Python DeepFace microservice.
+
+Setup:
+
+```bash
+cd emotion_service
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app:app --host 127.0.0.1 --port 8001
+```
+
+The backend proxies webcam snapshots to:
+
+```text
+http://127.0.0.1:8001/analyze
+```
+
+Configure this in `backend/.env` if needed:
+
+```env
+EMOTION_SERVICE_URL=http://127.0.0.1:8001/analyze
+```
+
 ## Frontend
 
 ### Included Features
@@ -96,6 +127,10 @@ Emotion to auto-mode mapping:
 - AI voice output with SpeechSynthesis API
 - Local-only webcam emotion detection with `face-api.js`
 - Responsive design for desktop and mobile
+
+Note:
+- Face presence box and webcam overlay still run in the browser
+- Emotion label accuracy is improved by the local DeepFace service
 
 ## Environment Setup
 
@@ -143,32 +178,86 @@ cd backend
 npm run dev
 ```
 
-### 4. Start the frontend
+### 4. Start the DeepFace emotion service
+
+```bash
+cd emotion_service
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app:app --host 127.0.0.1 --port 8001
+```
+
+### 5. Start the frontend
 
 ```bash
 cd frontend
 npm run dev
 ```
 
-### 5. Open the app
+### 6. Open the app
 
 ```text
 http://localhost:5173
 ```
 
+## Deploy Live
+
+This stack deploys best as three services:
+
+- `frontend` as a static site
+- `backend` as a Node web service
+- `emotion_service` as a Python web service
+
+This repo includes a ready Render blueprint at [render.yaml](c:/Users/Ashutosh%20Kumar%20Jha/Desktop/lastsem/render.yaml).
+
+### Recommended hosting
+
+- Frontend: Render Static Site
+- Backend: Render Node Web Service
+- Emotion service: Render Python Web Service
+- Database: MongoDB Atlas
+
+### Production environment values
+
+Backend:
+
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_atlas_uri
+GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL=llama-3.3-70b-versatile
+CLIENT_URL=https://your-frontend-domain.onrender.com
+EMOTION_SERVICE_URL=https://your-emotion-service.onrender.com/analyze
+```
+
+Frontend:
+
+```env
+VITE_API_URL=https://your-backend-domain.onrender.com/api
+VITE_FACE_API_MODEL_URL=https://justadudewhohacks.github.io/face-api.js/models
+```
+
+### Important production note
+
+- The current Piper setup is for local Windows use.
+- For live hosting, let the frontend use browser speech fallback unless you later add a Linux-compatible server TTS setup.
+- The app still works live without server-side Piper.
+
 ## Integration Flow
 
 1. The frontend creates a local session ID and restores preferences.
-2. The webcam detects expressions locally and maps them to one emotion label.
-3. The client sends message text, selected mode, auto-mode state, and emotion to the backend.
-4. Express builds an emotion-aware Groq prompt using the active personality.
-5. MongoDB stores the latest messages and preferences.
-6. The AI reply is shown in the chat and spoken aloud with mode-based voice tone.
+2. The webcam preview and face box run locally in the browser.
+3. The frontend sends a compressed local snapshot to the DeepFace emotion service for stronger emotion analysis.
+4. The backend receives the detected emotion label and combines it with the selected mode.
+5. Express builds an emotion-aware Groq prompt using the active personality.
+6. MongoDB stores the latest messages and preferences.
+7. The AI reply is shown in the chat and spoken aloud with mode-based voice tone.
 
 ## Privacy Notes
 
-- Webcam frames never go to the backend.
-- Only the text message, current mode, and derived emotion label are sent.
+- For stronger DeepFace detection, compressed webcam snapshots are sent to your local emotion service.
+- The main chat backend still only uses the derived emotion label, not raw video streams.
 - Camera and microphone permissions are handled by the browser.
 
 ## Browser Notes

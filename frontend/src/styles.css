@@ -163,6 +163,16 @@ textarea {
   padding: 12px 16px;
 }
 
+.stop-voice-button {
+  background: rgba(255, 123, 123, 0.18);
+  color: var(--text);
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+}
+
 .mode-button {
   display: inline-flex;
   align-items: center;
@@ -298,7 +308,28 @@ textarea {
   background: rgba(78, 205, 196, 0.16);
 }
 
+.emotion-chip-happy {
+  background: rgba(102, 214, 126, 0.2);
+}
+
+.emotion-chip-sad {
+  background: rgba(110, 170, 255, 0.22);
+}
+
+.emotion-chip-angry {
+  background: rgba(255, 111, 111, 0.22);
+}
+
+.emotion-chip-neutral {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.emotion-chip-stressed {
+  background: rgba(255, 176, 94, 0.22);
+}
+
 .video-shell {
+  position: relative;
   border-radius: 24px;
   overflow: hidden;
   aspect-ratio: 4 / 3;
@@ -313,14 +344,122 @@ textarea {
   object-fit: cover;
 }
 
+.video-shell video {
+  display: block;
+  transform: scaleX(-1);
+  object-position: center;
+}
+
 .video-placeholder {
   display: grid;
   place-items: center;
   color: var(--muted);
 }
 
+.video-overlay-badge {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.42);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+.video-overlay-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform: scaleX(-1);
+}
+
+.video-overlay-status {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+.video-overlay-status.detected {
+  background: rgba(68, 201, 126, 0.35);
+}
+
+.video-overlay-status.searching {
+  background: rgba(255, 176, 94, 0.28);
+}
+
 .emotion-info p {
   margin: 0 0 10px;
+}
+
+.emotion-live-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.emotion-live-emoji {
+  font-size: 2rem;
+}
+
+.emotion-live-title {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.emotion-live-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.emotion-score-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.raw-score-list {
+  margin-top: 8px;
+}
+
+.emotion-score-row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 48px;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.emotion-score-bar {
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.emotion-score-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+}
+
+.raw-score-fill {
+  background: linear-gradient(135deg, #7aa8ff, #58d6ff);
 }
 
 .error-text {
@@ -355,6 +494,7 @@ textarea {
 .mode-button:hover,
 .secondary-button:hover,
 .mic-button:hover,
+.stop-voice-button:hover,
 .send-button:hover {
   transform: translateY(-1px);
 }

@@ -51,6 +51,10 @@ const ChatHeader = ({
           );
         })}
       </div>
+      <p className="subtle-text">
+        Current manual mode: <strong>{selectedMode.replaceAll("-", " ")}</strong> | Active response mode:{" "}
+        <strong>{effectiveMode.replaceAll("-", " ")}</strong>
+      </p>
     </header>
   );
 };

@@ -7,3 +7,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .DS_Store
+*.log
+emotion_service/.venv/
+emotion_service/__pycache__/
+emotion_service/.pytest_cache/
+backend/piper/
