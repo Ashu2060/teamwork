@@ -9,26 +9,20 @@
 [32m[nodemon] starting `node server.js`[39m
 MongoDB connected
 Backend server running on http://localhost:5000
-[0mGET /api/mode/3b82c585-cb05-4c74-9bc8-2c77028e84e8 [31m500[0m 150.519 ms - 157[0m
-[0mGET /api/chat/05440efc-84b2-4833-9e56-43972794d292 [32m200[0m 192.177 ms - 116[0m
-[0mGET /api/chat/3b82c585-cb05-4c74-9bc8-2c77028e84e8 [32m200[0m 174.079 ms - 116[0m
-[0mGET /api/mode/3b82c585-cb05-4c74-9bc8-2c77028e84e8 [32m200[0m 32.216 ms - 256[0m
-[0mGET /api/chat/05440efc-84b2-4833-9e56-43972794d292 [36m304[0m 63.345 ms - -[0m
-[0mGET /api/mode/05440efc-84b2-4833-9e56-43972794d292 [32m200[0m 271.615 ms - 256[0m
-[0mGET /api/mode/05440efc-84b2-4833-9e56-43972794d292 [36m304[0m 28.063 ms - -[0m
-[0mGET /api/chat/3b82c585-cb05-4c74-9bc8-2c77028e84e8 [36m304[0m 278.976 ms - -[0m
-[0mPOST /api/chat [32m200[0m 460.875 ms - 651[0m
-[0mPOST /api/chat [32m200[0m 488.192 ms - 1365[0m
-[0mPOST /api/chat [32m200[0m 971.963 ms - 3659[0m
-[0mPOST /api/mode [32m200[0m 154.490 ms - 257[0m
-[0mPOST /api/chat [32m200[0m 601.594 ms - 3462[0m
-[0mGET /api/chat/242a5035-614e-4ed2-b3e4-45a5095876a9 [31m500[0m 81.439 ms - 157[0m
-[0mGET /api/mode/242a5035-614e-4ed2-b3e4-45a5095876a9 [32m200[0m 111.001 ms - 256[0m
-[0mGET /api/chat/242a5035-614e-4ed2-b3e4-45a5095876a9 [32m200[0m 30.283 ms - 116[0m
-[0mGET /api/mode/242a5035-614e-4ed2-b3e4-45a5095876a9 [32m200[0m 25.605 ms - 256[0m
-[0mPOST /api/chat [32m200[0m 411.245 ms - 806[0m
-[0mPOST /api/mode [32m200[0m 307.389 ms - 257[0m
-[0mPOST /api/mode [32m200[0m 611.397 ms - 257[0m
-[0mPOST /api/chat [32m200[0m 739.859 ms - 1217[0m
-[0mPOST /api/mode [32m200[0m 739.067 ms - 257[0m
-[0mPOST /api/mode [32m200[0m 278.869 ms - 264[0m
+[0mGET /api/chat/3b82c585-cb05-4c74-9bc8-2c77028e84e8 [32m200[0m 57.819 ms - 3658[0m
+[0mGET /api/chat/3b82c585-cb05-4c74-9bc8-2c77028e84e8 [36m304[0m 53.696 ms - -[0m
+[0mGET /api/mode/3b82c585-cb05-4c74-9bc8-2c77028e84e8 [36m304[0m 269.849 ms - -[0m
+[0mGET /api/mode/3b82c585-cb05-4c74-9bc8-2c77028e84e8 [36m304[0m 30.266 ms - -[0m
+[0mPOST /api/voice [32m200[0m 1182.174 ms - 187040[0m
+[0mGET /api/chat/242a5035-614e-4ed2-b3e4-45a5095876a9 [32m200[0m 33.650 ms - 5011[0m
+[0mGET /api/mode/242a5035-614e-4ed2-b3e4-45a5095876a9 [36m304[0m 32.930 ms - -[0m
+[0mGET /api/mode/242a5035-614e-4ed2-b3e4-45a5095876a9 [36m304[0m 28.823 ms - -[0m
+[0mGET /api/chat/242a5035-614e-4ed2-b3e4-45a5095876a9 [36m304[0m 32.364 ms - -[0m
+[0mGET /api/mode/242a5035-614e-4ed2-b3e4-45a5095876a9 [36m304[0m 51.282 ms - -[0m
+[0mGET /api/chat/242a5035-614e-4ed2-b3e4-45a5095876a9 [36m304[0m 56.342 ms - -[0m
+[0mGET /api/mode/242a5035-614e-4ed2-b3e4-45a5095876a9 [36m304[0m 26.332 ms - -[0m
+[0mGET /api/chat/242a5035-614e-4ed2-b3e4-45a5095876a9 [36m304[0m 28.776 ms - -[0m
+[0mPOST /api/chat [32m200[0m 727.877 ms - 6088[0m
+[0mPOST /api/voice [32m200[0m 2700.833 ms - 659964[0m
+[0mPOST /api/chat [32m200[0m 744.865 ms - 7315[0m
+[0mPOST /api/voice [32m200[0m 4424.880 ms - 1302640[0m
