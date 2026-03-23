@@ -1,8 +1,11 @@
 [phases.setup]
-nixPkgs = ["python311", "gcc", "pkg-config"]
+nixPkgs = ["python310", "gcc", "pkg-config"]
 
 [phases.install]
-cmds = ["pip install -r requirements.txt"]
+cmds = [
+  "python -m pip install --upgrade pip setuptools wheel",
+  "pip install -r requirements.txt"
+]
 
 [start]
 cmd = "uvicorn app:app --host 0.0.0.0 --port $PORT"
