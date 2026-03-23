@@ -1,5 +1,6 @@
 import { spawn } from "node:child_process";
-import fs from "node:fs/promises";
+import fs from "node:fs";
+import fsPromises from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { prepareTextForHindiVoice } from "./groqService.js";
@@ -16,17 +17,36 @@ export const voiceFeatureEnabled = () =>
   Boolean(process.env.PIPER_EXECUTABLE_PATH && process.env.PIPER_DEFAULT_MODEL_PATH);
 
 const getModelPathForMode = (mode) => {
+  if (mode === "life-coach" && process.env.PIPER_ENGLISH_MODEL_PATH) {
+    return process.env.PIPER_ENGLISH_MODEL_PATH;
+  }
+
   const envKey = modeModelEnvMap[mode] || "PIPER_DEFAULT_MODEL_PATH";
   return process.env[envKey] || process.env.PIPER_DEFAULT_MODEL_PATH;
 };
 
 const shouldUseHindiVoicePrep = (modelPath) => /hi[_-]IN/i.test(modelPath || "");
 
+const fileExists = (targetPath) => {
+  try {
+    fs.accessSync(targetPath);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 const getPiperArgs = ({ modelPath, outputPath }) => {
   const args = ["-m", modelPath, "-f", outputPath];
-  const configPath = process.env.PIPER_MODEL_CONFIG_PATH;
+  const inferredConfigPath = `${modelPath}.json`;
+  const configPath =
+    process.env.PIPER_MODEL_CONFIG_PATH &&
+    process.env.PIPER_MODEL_CONFIG_PATH.endsWith(".json") &&
+    fileExists(process.env.PIPER_MODEL_CONFIG_PATH)
+      ? process.env.PIPER_MODEL_CONFIG_PATH
+      : inferredConfigPath;
 
-  if (configPath) {
+  if (fileExists(configPath)) {
     args.push("-c", configPath);
   }
 
@@ -41,7 +61,7 @@ export const synthesizeSpeech = async ({ text, mode = "therapist" }) => {
     throw new Error("Piper voice settings are missing");
   }
 
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "moodmate-piper-"));
+  const tempDir = await fsPromises.mkdtemp(path.join(os.tmpdir(), "moodmate-piper-"));
   const outputPath = path.join(tempDir, `${Date.now()}.wav`);
   const args = getPiperArgs({ modelPath, outputPath });
   const spokenText = shouldUseHindiVoicePrep(modelPath)
@@ -76,7 +96,7 @@ export const synthesizeSpeech = async ({ text, mode = "therapist" }) => {
     });
   });
 
-  const audioBuffer = await fs.readFile(outputPath);
-  await fs.rm(tempDir, { recursive: true, force: true });
+  const audioBuffer = await fsPromises.readFile(outputPath);
+  await fsPromises.rm(tempDir, { recursive: true, force: true });
   return audioBuffer;
 };
