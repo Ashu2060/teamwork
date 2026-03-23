@@ -3,11 +3,11 @@ from typing import Dict, List
 
 import cv2
 import numpy as np
-from deepface import DeepFace
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 app = FastAPI(title="MoodMate DeepFace Emotion Service")
+_deepface_module = None
 
 
 class AnalyzeRequest(BaseModel):
@@ -78,6 +78,17 @@ def normalize_scores(emotion_scores: Dict[str, float]) -> List[Dict[str, float]]
     return [{"label": label, "value": round(score / 100, 4)} for label, score in ranked[:5]]
 
 
+def get_deepface():
+    global _deepface_module
+
+    if _deepface_module is None:
+        from deepface import DeepFace
+
+        _deepface_module = DeepFace
+
+    return _deepface_module
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -87,7 +98,7 @@ def health():
 def analyze(request: AnalyzeRequest):
     try:
         image = decode_image(request.image)
-        result = DeepFace.analyze(
+        result = get_deepface().analyze(
             img_path=image,
             actions=["emotion"],
             detector_backend="opencv",
