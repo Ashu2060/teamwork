@@ -4,12 +4,21 @@ const connectDatabase = async () => {
   const mongoUri = process.env.MONGODB_URI;
 
   if (!mongoUri) {
-    throw new Error("MONGODB_URI is missing in environment variables");
+    console.warn("MONGODB_URI is missing. Starting without database persistence.");
+    return false;
   }
 
-  mongoose.set("strictQuery", true);
-  await mongoose.connect(mongoUri);
-  console.log("MongoDB connected");
+  try {
+    mongoose.set("strictQuery", true);
+    await mongoose.connect(mongoUri, {
+      serverSelectionTimeoutMS: 5000
+    });
+    console.log("MongoDB connected");
+    return true;
+  } catch (error) {
+    console.warn(`MongoDB unavailable. Starting with in-memory fallback: ${error.message}`);
+    return false;
+  }
 };
 
 export default connectDatabase;

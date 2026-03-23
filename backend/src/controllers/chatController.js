@@ -1,9 +1,17 @@
 import ChatSession from "../models/ChatSession.js";
 import UserPreference from "../models/UserPreference.js";
+import { ensureMemoryState, saveMemoryState } from "../services/memoryStore.js";
 import { buildGroqMessages, generateAssistantReply } from "../services/groqService.js";
 import { determineEffectiveMode, supportedModes } from "../utils/modeConfig.js";
+import mongoose from "mongoose";
+
+const isDatabaseAvailable = () => mongoose.connection.readyState === 1;
 
 const ensureSession = async (sessionId) => {
+  if (!isDatabaseAvailable()) {
+    return ensureMemoryState(sessionId);
+  }
+
   const [session, preference] = await Promise.all([
     ChatSession.findOne({ sessionId }),
     UserPreference.findOne({ sessionId })
@@ -100,7 +108,11 @@ export const sendChatMessage = async (req, res, next) => {
     preference.selectedMode = normalizedMode;
     preference.autoModeEnabled = effectiveAutoMode;
 
-    await Promise.all([session.save(), preference.save()]);
+    if (isDatabaseAvailable()) {
+      await Promise.all([session.save(), preference.save()]);
+    } else {
+      saveMemoryState({ session, preference });
+    }
 
     res.status(200).json({
       reply: assistantText,

@@ -15,11 +15,11 @@ export const EMOTION_META = {
 };
 
 export const MODE_VOICE_MAP = {
-  "life-coach": { pitch: 1.08, rate: 1.01, lang: "en-IN", preferFemale: true },
-  therapist: { pitch: 1.04, rate: 0.9, lang: "en-IN", preferFemale: true },
-  "friendly-buddy": { pitch: 1.14, rate: 1.02, lang: "en-IN", preferFemale: true },
-  girlfriend: { pitch: 1.2, rate: 0.94, lang: "hi-IN", preferFemale: true },
-  "flirty-girlfriend": { pitch: 1.24, rate: 0.98, lang: "hi-IN", preferFemale: true }
+  "life-coach": { pitch: 1.08, rate: 0.98, lang: "hi-IN", preferFemale: true },
+  therapist: { pitch: 1.04, rate: 0.88, lang: "hi-IN", preferFemale: true },
+  "friendly-buddy": { pitch: 1.12, rate: 0.98, lang: "hi-IN", preferFemale: true },
+  girlfriend: { pitch: 1.16, rate: 0.9, lang: "hi-IN", preferFemale: true },
+  "flirty-girlfriend": { pitch: 1.18, rate: 0.94, lang: "hi-IN", preferFemale: true }
 };
 
 export const EMOTION_MODE_MAP = {

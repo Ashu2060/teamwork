@@ -1,8 +1,17 @@
 import ChatSession from "../models/ChatSession.js";
 import UserPreference from "../models/UserPreference.js";
+import { ensureMemoryState, saveMemoryState } from "../services/memoryStore.js";
 import { supportedModes } from "../utils/modeConfig.js";
+import mongoose from "mongoose";
+
+const isDatabaseAvailable = () => mongoose.connection.readyState === 1;
 
 const ensurePreference = async (sessionId) => {
+  if (!isDatabaseAvailable()) {
+    const { preference } = ensureMemoryState(sessionId);
+    return preference;
+  }
+
   const [preference, session] = await Promise.all([
     UserPreference.findOne({ sessionId }),
     ChatSession.findOne({ sessionId })
@@ -54,12 +63,16 @@ export const updateModeSettings = async (req, res, next) => {
 
     if (selectedMode) {
       preference.selectedMode = selectedMode;
-      await ChatSession.updateOne({ sessionId }, { selectedMode });
+      if (isDatabaseAvailable()) {
+        await ChatSession.updateOne({ sessionId }, { selectedMode });
+      }
     }
 
     if (typeof autoModeEnabled === "boolean") {
       preference.autoModeEnabled = autoModeEnabled;
-      await ChatSession.updateOne({ sessionId }, { autoModeEnabled });
+      if (isDatabaseAvailable()) {
+        await ChatSession.updateOne({ sessionId }, { autoModeEnabled });
+      }
     }
 
     if (theme) {
@@ -70,7 +83,21 @@ export const updateModeSettings = async (req, res, next) => {
       preference.voiceEnabled = voiceEnabled;
     }
 
-    await preference.save();
+    if (isDatabaseAvailable()) {
+      await preference.save();
+    } else {
+      const { session } = ensureMemoryState(sessionId);
+
+      if (selectedMode) {
+        session.selectedMode = selectedMode;
+      }
+
+      if (typeof autoModeEnabled === "boolean") {
+        session.autoModeEnabled = autoModeEnabled;
+      }
+
+      saveMemoryState({ session, preference });
+    }
 
     res.json(preference);
   } catch (error) {

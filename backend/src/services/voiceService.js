@@ -2,6 +2,7 @@ import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { prepareTextForHindiVoice } from "./groqService.js";
 
 const modeModelEnvMap = {
   girlfriend: "PIPER_GIRLFRIEND_MODEL_PATH",
@@ -18,6 +19,8 @@ const getModelPathForMode = (mode) => {
   const envKey = modeModelEnvMap[mode] || "PIPER_DEFAULT_MODEL_PATH";
   return process.env[envKey] || process.env.PIPER_DEFAULT_MODEL_PATH;
 };
+
+const shouldUseHindiVoicePrep = (modelPath) => /hi[_-]IN/i.test(modelPath || "");
 
 const getPiperArgs = ({ modelPath, outputPath }) => {
   const args = ["-m", modelPath, "-f", outputPath];
@@ -41,6 +44,9 @@ export const synthesizeSpeech = async ({ text, mode = "therapist" }) => {
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "moodmate-piper-"));
   const outputPath = path.join(tempDir, `${Date.now()}.wav`);
   const args = getPiperArgs({ modelPath, outputPath });
+  const spokenText = shouldUseHindiVoicePrep(modelPath)
+    ? await prepareTextForHindiVoice(text)
+    : text;
 
   await new Promise((resolve, reject) => {
     const child = spawn(executablePath, args, {
@@ -49,7 +55,7 @@ export const synthesizeSpeech = async ({ text, mode = "therapist" }) => {
 
     let stderr = "";
 
-    child.stdin.write(text, "utf8");
+    child.stdin.write(spokenText, "utf8");
     child.stdin.end();
 
     child.stderr.on("data", (chunk) => {
