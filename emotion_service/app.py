@@ -1,13 +1,13 @@
 import base64
 from typing import Dict, List
 
-import cv2
 import numpy as np
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 app = FastAPI(title="MoodMate DeepFace Emotion Service")
 _deepface_module = None
+_cv2_module = None
 
 
 class AnalyzeRequest(BaseModel):
@@ -23,6 +23,17 @@ EMOTION_MAP = {
     "surprise": "happy",
     "disgust": "angry"
 }
+
+
+def get_cv2():
+    global _cv2_module
+
+    if _cv2_module is None:
+        import cv2
+
+        _cv2_module = cv2
+
+    return _cv2_module
 
 
 def pick_best_emotion(emotion_scores: Dict[str, float]) -> str:
@@ -60,6 +71,7 @@ def decode_image(image_data: str):
 
     image_bytes = base64.b64decode(image_data)
     image_array = np.frombuffer(image_bytes, np.uint8)
+    cv2 = get_cv2()
     image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
 
     if image is None:
