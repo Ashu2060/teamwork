@@ -64,8 +64,11 @@ export const synthesizeSpeech = async ({ text, mode = "therapist" }) => {
   const tempDir = await fsPromises.mkdtemp(path.join(os.tmpdir(), "moodmate-piper-"));
   const outputPath = path.join(tempDir, `${Date.now()}.wav`);
   const args = getPiperArgs({ modelPath, outputPath });
+  const alreadyHindiScript = /[\u0900-\u097F]/.test(text || "");
   const spokenText = shouldUseHindiVoicePrep(modelPath)
-    ? await prepareTextForHindiVoice(text)
+    ? alreadyHindiScript
+      ? text
+      : await prepareTextForHindiVoice(text)
     : text;
 
   await new Promise((resolve, reject) => {

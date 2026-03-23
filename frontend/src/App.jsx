@@ -392,10 +392,11 @@ const App = () => {
       setMessages(response.data.messages || []);
       setEffectiveMode(response.data.effectiveMode || displayMode);
       const replyText = response.data.reply;
+      const voiceText = response.data.voiceText || replyText;
       const replyMode = response.data.effectiveMode || displayMode;
       const customVoicePlayed = await playCustomVoice({
         apiBaseUrl: api.defaults.baseURL,
-        text: replyText,
+        text: voiceText,
         mode: replyMode,
         enabled: voiceEnabled,
         onStart: () => setSpeaking(true),
@@ -404,7 +405,7 @@ const App = () => {
 
       if (!customVoicePlayed) {
         speakText({
-          text: replyText,
+          text: voiceText,
           mode: replyMode,
           enabled: voiceEnabled,
           onStart: () => setSpeaking(true),

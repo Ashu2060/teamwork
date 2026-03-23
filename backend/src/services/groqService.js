@@ -11,6 +11,36 @@ const getGroqClient = () => {
   });
 };
 
+const parseVoicePayload = (rawContent) => {
+  const content = rawContent?.trim();
+
+  if (!content) {
+    return null;
+  }
+
+  const cleaned = content
+    .replace(/^```json\s*/i, "")
+    .replace(/^```\s*/i, "")
+    .replace(/\s*```$/i, "");
+
+  try {
+    const parsed = JSON.parse(cleaned);
+    const reply = parsed?.reply?.trim();
+    const voiceText = parsed?.voiceText?.trim();
+
+    if (!reply) {
+      return null;
+    }
+
+    return {
+      reply,
+      voiceText: voiceText || reply
+    };
+  } catch {
+    return null;
+  }
+};
+
 export const prepareTextForHindiVoice = async (text) => {
   const input = text?.trim();
 
@@ -75,8 +105,26 @@ export const generateAssistantReply = async (messages) => {
     model: process.env.GROQ_MODEL || "llama-3.3-70b-versatile",
     temperature: 0.55,
     max_tokens: 360,
-    messages
+    messages: [
+      ...messages,
+      {
+        role: "system",
+        content:
+          "Return a valid JSON object only. Keys: reply, voiceText. reply must be natural Roman Hindi for chat display. voiceText must be the same meaning in natural Devanagari Hindi for speech. Do not add markdown, code fences, or extra keys."
+      }
+    ]
   });
 
-  return response.choices?.[0]?.message?.content?.trim() || "I am here with you. Tell me more.";
+  const rawContent = response.choices?.[0]?.message?.content?.trim();
+  const parsed = parseVoicePayload(rawContent);
+
+  if (parsed) {
+    return parsed;
+  }
+
+  const fallbackReply = rawContent || "I am here with you. Tell me more.";
+  return {
+    reply: fallbackReply,
+    voiceText: fallbackReply
+  };
 };

@@ -91,7 +91,8 @@ export const sendChatMessage = async (req, res, next) => {
       selectedMode: effectiveMode
     });
 
-    const assistantText = await generateAssistantReply(groqMessages);
+    const assistantPayload = await generateAssistantReply(groqMessages);
+    const assistantText = assistantPayload.reply;
 
     const assistantMessage = {
       role: "assistant",
@@ -116,6 +117,7 @@ export const sendChatMessage = async (req, res, next) => {
 
     res.status(200).json({
       reply: assistantText,
+      voiceText: assistantPayload.voiceText,
       selectedMode: normalizedMode,
       effectiveMode,
       autoModeEnabled: effectiveAutoMode,
