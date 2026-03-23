@@ -4,7 +4,9 @@ nixPkgs = ["python310", "gcc", "pkg-config"]
 [phases.install]
 cmds = [
   "python -m pip install --upgrade pip setuptools wheel",
-  "pip install -r requirements.txt"
+  "pip install -r requirements.txt",
+  "pip uninstall -y opencv-python",
+  "pip install --no-cache-dir --force-reinstall opencv-python-headless==4.10.0.84"
 ]
 
 [start]
